@@ -1,0 +1,133 @@
+{
+  "name": "Form-Mock-CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Employee onboarding",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "Name",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Email",
+              "fieldType": "email",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Phone Number",
+              "fieldType": "number",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Date of joining",
+              "fieldType": "date",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Department",
+              "fieldType": "dropdown",
+              "fieldOptions": {
+                "values": [
+                  {
+                    "option": "Technology"
+                  },
+                  {
+                    "option": "Sales"
+                  },
+                  {
+                    "option": "HR"
+                  },
+                  {
+                    "option": "Support"
+                  }
+                ]
+              },
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Role",
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "Organization",
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.6,
+      "position": [
+        -752,
+        32
+      ],
+      "id": "5c506fea-85c5-4a15-8a14-7749379f3eca",
+      "name": "On form submission",
+      "webhookId": "c858a31c-1d17-48fc-a309-6f5968946fc9"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "",
+          "mode": "list",
+          "cachedResultName": "",
+          "cachedResultUrl": ""
+        }
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -544,
+        32
+      ],
+      "id": "c850a1c4-8805-48a8-9420-124dd57d46d1",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ITdvZNItEHgcuX9t",
+          "name": "Arman-Google-Auth-API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "2729ab54-64a4-4551-810b-c58ab81e2b27",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0960bcb1bef5ea47dcb3422f046de9dbed156503841bf3141c3d26b77b05d264"
+  },
+  "nodeGroups": [],
+  "id": "PIJfePP63vkaIXMJ",
+  "tags": []
+}
