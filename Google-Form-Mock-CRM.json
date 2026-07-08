@@ -1,0 +1,178 @@
+{
+  "name": "Google-Form-Mock-CRM",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "13zyLq8glqoFm6GTMBozzKSjwS6fVph1K3iucBSYdDL0",
+          "mode": "list",
+          "cachedResultName": "CRM for Leads",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13zyLq8glqoFm6GTMBozzKSjwS6fVph1K3iucBSYdDL0/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Leads from Website",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/13zyLq8glqoFm6GTMBozzKSjwS6fVph1K3iucBSYdDL0/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json['Full Legal Name'] }}",
+            "Email": "={{ $json.Email }}",
+            "Department": "={{ $json['Department/Team'] }}",
+            "Phone Number": "={{ $json['Phone Number'] }}",
+            "Role": "={{ $json['Job Title'] }}",
+            "Organization": "={{ $json.Organization }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone Number",
+              "displayName": "Phone Number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Department",
+              "displayName": "Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Role",
+              "displayName": "Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Organization",
+              "displayName": "Organization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -96,
+        -96
+      ],
+      "id": "35cd3c85-1a9b-4ab1-9f12-604acc3597b2",
+      "name": "Add lead to CRM",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ITdvZNItEHgcuX9t",
+          "name": "Arman-Google-Auth-API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "documentId": {
+          "__rl": true,
+          "value": "1ScJrd-Tj5fduxAwbYldkE5CylpT_YM0EOM6n2uvmvkA",
+          "mode": "list",
+          "cachedResultName": "New Employee Onboarding Form (Responses)",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ScJrd-Tj5fduxAwbYldkE5CylpT_YM0EOM6n2uvmvkA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 985095227,
+          "mode": "list",
+          "cachedResultName": "Form Responses 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ScJrd-Tj5fduxAwbYldkE5CylpT_YM0EOM6n2uvmvkA/edit#gid=985095227"
+        },
+        "event": "rowAdded",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTrigger",
+      "typeVersion": 1,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "e3b965d0-8789-40c2-88c0-259863021395",
+      "name": "Response From Google Form",
+      "credentials": {
+        "googleSheetsTriggerOAuth2Api": {
+          "id": "s6EVEUkReOYrfZZI",
+          "name": "Arman-Google-Auth-API"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Response From Google Form": {
+      "main": [
+        [
+          {
+            "node": "Add lead to CRM",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "89756e09-d8e4-4117-aa1f-4a8323ec8dbc",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0960bcb1bef5ea47dcb3422f046de9dbed156503841bf3141c3d26b77b05d264"
+  },
+  "nodeGroups": [],
+  "id": "WYsbGci5YSezAQi9",
+  "tags": []
+}
