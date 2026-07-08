@@ -1,0 +1,8 @@
+GET https://armanjdcript9490.app.n8n.cloud/webhook-test/d1ce2b90-fc67-43ed-a746-c4cda9931641
+Content-Type: application/json
+
+{
+  "imageUrl": "https://content.linkedin.com/lem/static/sc/etc-clientlibs/settings/wcm/designs/gandalf/clientlibs/resources/images/og-social-share-image.jpg",
+  "platform": "linkedin",
+  "content": "Hello, This is my first post in Linkedin"
+}

@@ -1,0 +1,208 @@
+{
+  "name": "Content-Creation-System",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "d1ce2b90-fc67-43ed-a746-c4cda9931641",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -912,
+        -96
+      ],
+      "id": "6567aea0-20ff-4c01-a749-ddd3ee2d222d",
+      "name": "Receiving Content",
+      "webhookId": "d1ce2b90-fc67-43ed-a746-c4cda9931641"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.body.imageUrl }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -704,
+        -96
+      ],
+      "id": "644c328c-094a-470f-b0d1-b13b503cf954",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.platform }}",
+                    "rightValue": "linkedin",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "df0b93cd-a7c8-4ef4-b2a1-42008814d13d"
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Linkedin"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "cd0479b0-8118-4961-b0ae-c64e0bde15eb",
+                    "leftValue": "={{ $json.body.platform }}",
+                    "rightValue": "twitter",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Twitter"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "29a64a9b-0326-46ed-b454-e688114056dd",
+                    "leftValue": "={{ $json.body.platform }}",
+                    "rightValue": "instagram",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Instagram"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -480,
+        -112
+      ],
+      "id": "405a8b9b-7305-4123-88b0-27d5cc4e201e",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "additionalFields": {
+          "attachments": "data"
+        }
+      },
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        -96
+      ],
+      "id": "cd7879f2-b23e-4033-b168-ab67a88d6307",
+      "name": "Create Tweet"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.body.content }}",
+        "shareMediaCategory": "IMAGE",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.linkedIn",
+      "typeVersion": 1,
+      "position": [
+        -128,
+        -288
+      ],
+      "id": "f9b9b05a-336b-46c1-9ede-6cd65960933a",
+      "name": "Create a post"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Receiving Content": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [],
+        []
+      ]
+    },
+    "Create Tweet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "99384e0d-5616-478a-8e2c-c5198cf742f0",
+  "meta": {
+    "instanceId": "0960bcb1bef5ea47dcb3422f046de9dbed156503841bf3141c3d26b77b05d264"
+  },
+  "nodeGroups": [],
+  "id": "YbnfqJoc3Moad4NM",
+  "tags": []
+}
