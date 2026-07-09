@@ -81,14 +81,14 @@
           "value": "1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY",
           "mode": "list",
           "cachedResultName": "Customer Support Issues",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY/edit?usp=drivesdk"
+          "cachedResultUrl": ""
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Issues",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY/edit#gid=0"
+          "cachedResultUrl": ""
         },
         "columns": {
           "mappingMode": "defineBelow",
