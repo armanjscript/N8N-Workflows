@@ -1,0 +1,333 @@
+{
+  "name": "Automated-Gmail-Processing",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 1,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        -352,
+        0
+      ],
+      "id": "66c36a2c-0cea-4e33-8cd3-178c28a5797f",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "7eDk4pMvE2OwXcxl",
+          "name": "Arman-Gmail-Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.snippet }}, {{ $json.From }}, {{ $json.Subject }}, {{ $json.internalDate }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are powerful customer support assistant in the e-commerce space. Analyze incoming customer emails and create a concise of each email. Examples of emails include: queries, requests, issues/problems, etc.\n\nFocus on the main problem, any specific details and  the urgency level if clear from email.\n\nGive the output with only these values:\n1. Ticket ID (must be unique id same as uuid with starting `TKT-`)\n2. Date (fetch the date in format `DD-MM-YYYY` from when you received the email)\n3. Customer\n4. Contact\n5. Issue Subject\n6. Issue Category\n7. Description\n8. Status\n9. Priority Level\n10. Assigned Department\n\n\nThe department must be one of these:\nLogistics\nInventory\nPayments\nIT Support\nSecurity\nOther"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -144,
+        0
+      ],
+      "id": "79634b30-010e-4af0-a624-46d292b0c3c4",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-ai/deepseek-v4-pro",
+          "mode": "list",
+          "cachedResultName": "deepseek-ai/deepseek-v4-pro"
+        },
+        "responsesApiEnabled": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -176,
+        224
+      ],
+      "id": "8e216ec9-e785-470a-b456-df3ea4649212",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wpETM1C6wVW19GdE",
+          "name": "Nvidia-API-Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY",
+          "mode": "list",
+          "cachedResultName": "Customer Support Issues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Issues",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1AlP4_M0ZjltosCf0iETAk7uGhDjsMeyTfEiRikLYrXY/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ticket ID": "={{ $json.output['Ticket ID'] }}",
+            "Date": "={{ $json.output.Date }}",
+            "Customer": "={{ $json.output.Customer }}",
+            "Contact": "={{ $json.output.Contact }}",
+            "Issue Subject": "={{ $json.output['Issue Subject'] }}",
+            "Issue Category": "={{ $json.output['Issue Category'] }}",
+            "Description": "={{ $json.output.Description }}",
+            "Status": "={{ $json.output.Status }}",
+            "Priority Level": "={{ $json.output['Priority Level'] }}",
+            "Assigned Department": "={{ $json.output['Assigned Department'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Ticket ID",
+              "displayName": "Ticket ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Customer",
+              "displayName": "Customer",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Contact",
+              "displayName": "Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issue Subject",
+              "displayName": "Issue Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Issue Category",
+              "displayName": "Issue Category",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Description",
+              "displayName": "Description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Priority Level",
+              "displayName": "Priority Level",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Assigned Department",
+              "displayName": "Assigned Department",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        0
+      ],
+      "id": "d1c0c95c-3683-4ce0-9277-f7bef687e212",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "ITdvZNItEHgcuX9t",
+          "name": "Arman-Google-Auth-API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"Ticket ID\": \"TK001\",\n  \"Date\": \"06-05-2026\",\n  \"Customer\": \"\",\n  \"Contact\":\"\",\n  \"Issue Subject\": \"\",\n  \"Issue Category\": \"\",\n  \"Description\": \"\",\n  \"Status\": \"\",\n  \"Priority Level\": \"\",\n  \"Assigned Department\": \"\"\n}",
+        "autoFix": true
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        64,
+        208
+      ],
+      "id": "fbf76927-b72f-4b12-a1c1-5281aa626b60",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "deepseek-ai/deepseek-v4-pro",
+          "mode": "list",
+          "cachedResultName": "deepseek-ai/deepseek-v4-pro"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -16,
+        416
+      ],
+      "id": "f835365a-89ab-49a8-a89c-67694a253cde",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "wpETM1C6wVW19GdE",
+          "name": "Nvidia-API-Key"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Structured Output Parser",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e2f172a9-1e1e-49b8-b77c-d939e99c3fa8",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0960bcb1bef5ea47dcb3422f046de9dbed156503841bf3141c3d26b77b05d264"
+  },
+  "nodeGroups": [],
+  "id": "Z3Uq7PdVCtdoK3EV",
+  "tags": []
+}
