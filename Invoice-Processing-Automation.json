@@ -111,14 +111,14 @@
           "value": "1kyjGewM-FPwxv4Z4QJ3MZxwyDZ38Oof8c8NZFtzftvk",
           "mode": "list",
           "cachedResultName": "CRM for n8n Course",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kyjGewM-FPwxv4Z4QJ3MZxwyDZ38Oof8c8NZFtzftvk/edit?usp=drivesdk"
+          "cachedResultUrl": ""
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Invoices",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1kyjGewM-FPwxv4Z4QJ3MZxwyDZ38Oof8c8NZFtzftvk/edit#gid=0"
+          "cachedResultUrl": ""
         },
         "columns": {
           "mappingMode": "defineBelow",
