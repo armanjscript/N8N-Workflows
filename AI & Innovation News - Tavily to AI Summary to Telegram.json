@@ -1,0 +1,316 @@
+{
+  "name": "AI & Innovation News - Tavily to AI Summary to Telegram",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Workflow: AI & Innovation News Bot\n\n**Schedule:** Every 12 hours\n**Source:** Tavily Search API\n**AI:** NVIDIA GLM-5.2\n**Output:** Telegram Channel\n\n### Prerequisites\n1. Create a **Tavily API Key** at https://tavily.com\n2. Create an **OpenAI API Credential** in n8n\n3. Create a **Telegram Bot Token** via @BotFather\n4. Get your **Telegram Channel ID** (e.g. -1001234567890)",
+        "height": 480
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -272
+      ],
+      "id": "8aea375b-fe90-49af-86e2-44e915d86335",
+      "name": "Workflow Instructions"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "id": "d60db928-377d-4e52-994e-9b61fa1a7304",
+      "name": "Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -592,
+        160
+      ],
+      "webhookId": "6c7922f1-2deb-47bf-a2df-bd022b366fdc"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.tavily.com/search",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <token>"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"query\": \"artificial intelligence innovation latest breakthroughs news {{ $now.format('YYYY-MM-DD') }}\",\n  \"topic\": \"news\",\n  \"search_depth\": \"advanced\",\n  \"max_results\": 8,\n  \"include_answer\": false,\n  \"include_raw_content\": false,\n  \"days\": 3\n}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "json"
+            }
+          }
+        }
+      },
+      "id": "a4b512e7-6daa-430e-bd6f-18d893f3e2fd",
+      "name": "Tavily Search",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -352,
+        160
+      ],
+      "retryOnFail": true,
+      "maxTries": 3,
+      "waitBetweenTries": 2000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.results.length }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              },
+              "id": "880fa58f-87f8-4948-a3a0-936de2771b35"
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "f3730dc5-0a6e-4818-a1e4-78542d9f17d8",
+      "name": "Has Results?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -112,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Tavily search results into a structured article digest\nconst results = $input.first().json.results || [];\n\nconst formatted = results.map((article, idx) => {\n  const title = article.title || 'Untitled';\n  const url = article.url || '';\n  const content = article.content || '';\n  const score = article.score || 0;\n  const publishedDate = article.published_date || 'Recent';\n  \n  return `---\\nArticle ${idx + 1}: ${title}\\nPublished: ${publishedDate}\\nRelevance Score: ${score}\\nURL: ${url}\\nSummary: ${content}`;\n}).join('\\n\\n');\n\nreturn [{\n  json: {\n    articlesFormatted: formatted,\n    articleCount: results.length,\n    query: $input.first().json.query || 'AI and Innovation'\n  }\n}];"
+      },
+      "id": "9817561a-a6ae-47b5-9434-c71ab904909d",
+      "name": "Format Articles",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        128,
+        48
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Here are {{ $json.articleCount }} recent articles about AI and Innovation found via search query \"{{ $json.query }}\":\n\n{{ $json.articlesFormatted }}\n\nPlease create a well-structured, engaging news digest summary of these articles. Your summary should:\n\n1. **Group related articles** by theme or topic\n2. **Highlight the most impactful** developments (2-3 key takeaways)\n3. **Write in a journalistic, engaging tone** suitable for a Telegram channel\n4. **Include article titles as bold text** and their URLs as hyperlinks\n5. **Keep it concise but informative** — aim for 300-500 words\n6. **Use Telegram-compatible formatting**: *bold* for emphasis, [text](url) for links\n\nFormat the output as a ready-to-send Telegram message with:\n- A catchy headline\n- 📰 emoji sections for each topic group\n- 🔗 Source links\n- A brief editorial comment on the overall trend",
+        "options": {
+          "systemMessage": "=You are an expert tech journalist and AI analyst. You specialize in distilling complex AI and innovation news into clear, engaging summaries for a general tech-savvy audience.\n\nCurrent date: {{ $now.format('DDDD') }}\n\n## Style Guidelines\n- Write in a professional yet accessible tone\n- Focus on WHY each development matters\n- Connect dots between related stories when possible\n- Never fabricate information — only use what's provided in the articles\n- Use Telegram-compatible Markdown: *bold*, _italic_, [link text](url)\n- Start with a brief \"Editor's Pick\" highlighting the #1 most important story\n- End with a one-sentence forward-looking statement",
+          "maxIterations": 3
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        400,
+        48
+      ],
+      "id": "94f2b64a-0ee3-4754-bcfc-ce8d1f663ea0",
+      "name": "AI Summarizer"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Error logging — write error details to execution data\nreturn [{\n  json: {\n    error: true,\n    errorMessage: $input.first().json.error.message || 'Unknown error',\n    timestamp: new Date().toISOString(),\n    workflow: 'AI & Innovation News Bot'\n  }\n}];"
+      },
+      "id": "bc5c3d42-b184-487d-ae62-e94dd39eec49",
+      "name": "Log Error",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -16,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "z-ai/glm-5.2",
+          "mode": "list",
+          "cachedResultName": "z-ai/glm-5.2"
+        },
+        "options": {
+          "temperature": 0.5
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        400,
+        288
+      ],
+      "id": "9b55c01d-cbb0-4256-b264-a28ffe3266cb",
+      "name": "GLM-5.2-Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "wpETM1C6wVW19GdE",
+          "name": "Nvidia-API-Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "@<Your channel or Person username>",
+        "text": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        752,
+        48
+      ],
+      "id": "22d62165-a273-4590-9586-116ed92ce808",
+      "name": "Send a text message",
+      "webhookId": "423a5b24-308e-48d3-adc6-ae91995c1493",
+      "credentials": {
+        "telegramApi": {
+          "id": "gLDW4sKnqM0qoVlh",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Every 12 Hours": {
+      "main": [
+        [
+          {
+            "node": "Tavily Search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tavily Search": {
+      "main": [
+        [
+          {
+            "node": "Has Results?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Log Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Results?": {
+      "main": [
+        [
+          {
+            "node": "Format Articles",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Articles": {
+      "main": [
+        [
+          {
+            "node": "AI Summarizer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Summarizer": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "GLM-5.2-Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Summarizer",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "26f21690-094c-4d25-829e-3c6f8a24b535",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "0960bcb1bef5ea47dcb3422f046de9dbed156503841bf3141c3d26b77b05d264"
+  },
+  "nodeGroups": [],
+  "id": "mE6NOxQCdbO9xiyv",
+  "tags": [
+    {
+      "updatedAt": "2026-07-11T09:59:09.129Z",
+      "createdAt": "2026-07-11T09:59:09.129Z",
+      "id": "HmTXtXLdV0gPhcCm",
+      "name": "ai-news"
+    },
+    {
+      "updatedAt": "2026-07-11T09:59:09.101Z",
+      "createdAt": "2026-07-11T09:59:09.101Z",
+      "id": "L6F8tpO6dOFuTpQy",
+      "name": "telegram"
+    },
+    {
+      "updatedAt": "2026-07-11T09:59:09.154Z",
+      "createdAt": "2026-07-11T09:59:09.154Z",
+      "id": "sMbKt58eTewwOFN2",
+      "name": "automation"
+    }
+  ]
+}
